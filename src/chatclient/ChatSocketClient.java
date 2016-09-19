@@ -28,9 +28,11 @@ public class ChatSocketClient {
     Socket socket;
     InputStream inStream;
     OutputStream outStream;
+    ChatHelper chatHelper;
     
     public ChatSocketClient() {
         socket = new Socket();
+        chatHelper = new ChatHelper(this);
     }
     
     public boolean connect(byte[] ip, int port) {
@@ -62,8 +64,7 @@ public class ChatSocketClient {
                     try {
                         countReadByte = inStream.read(tempBuffer, 0, tempBuffer.length);
                         buffer = Arrays.copyOf(tempBuffer, countReadByte);
-                        System.out.println(new String(buffer, Charset.forName("cp866")));
-
+                        chatHelper.parsingPackage(buffer);
                     } catch (Exception ex) {
                         System.out.println("Ошибка чтения с сокета");
                         break;
@@ -83,7 +84,12 @@ public class ChatSocketClient {
             @Override
             public void run() {
                 try {
-                    outStream.write(buffer, 0, buffer.length);
+                    if (chatHelper.authenticationToken != null) {
+                        outStream.write(buffer, 0, buffer.length);
+                    }
+                    else {
+                        System.out.println("Сообщение не отправлено. Необходима авторизация");
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(ChatSocketClient.class.getName()).log(Level.SEVERE, null, ex);
                 }

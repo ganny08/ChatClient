@@ -17,6 +17,7 @@ public class ChatClient {
     public static void main(String[] args) {
         ChatSocketClient client = new ChatSocketClient();
         Scanner scanner = new Scanner(System.in);
+        ConsoleHelper consoleHelper = new ConsoleHelper(client);
         while(true) {
             System.out.print("Введите адрес сервера -> ");
             String ip = scanner.nextLine(); // читаем введеную строку
@@ -35,20 +36,9 @@ public class ChatClient {
             }
         }
         scanner = null;
-        readFromConsole(client); // запуск потока на чтение с консоли
+        consoleHelper.readFromConsole(); // запуск потока на чтение с консоли
     }
     
-    public static void readFromConsole(ChatSocketClient client) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Scanner scanner = new Scanner(System.in, "cp866");
-                while(true) {
-                    String msg = scanner.nextLine();
-                    client.writeAsync(msg.getBytes(Charset.forName("cp866"))); // передаем введеное сообщение на сервер
-                }
-            }
-        }).start();
-    }
+    
     
 }
