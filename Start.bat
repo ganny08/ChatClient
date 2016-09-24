@@ -1,1 +1,1 @@
-java -jar dist\ChatClient.jar
+java -jar ChatClient.jar
