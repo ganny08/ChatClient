@@ -27,31 +27,35 @@ public class ConsoleHelper {
             public void run() {
                 while(true) {
                     String msg = scanner.nextLine();
-                    switch (msg) {
-                        case "Login": {
-                            
+                    switch (msg.toLowerCase()) {
+                        case "login": {
+                            sendLogin();
                             break;
                         }
-                        case "Logout": {
-                            
+                        case "logout": {
+                            sendLoguot();
                             break;
                         }
-                        case "Sign up" : {
-                            
+                        case "sign up" : {
+                            sendSignUp();
                             break;
                         }
-                        case "Help" : {
-                            
+                        case "help" : {
+                            printMenu();
+                            break;
+                        }
+                        default: {
+                            //client.writeAsync(msg.getBytes(Charset.forName("cp866")),client.chatHelper.authenticationToken); // передаем введеное сообщение на сервер
+                            client.chatHelper.createAndSendMsg(msg.getBytes(Charset.forName("cp866")));
                             break;
                         }
                     }
-                    client.writeAsync(msg.getBytes(Charset.forName("cp866"))); // передаем введеное сообщение на сервер
                 }
             }
         }).start();
     }
     
-    private void printMenu() {
+    public static void printMenu() {
         System.out.println("1 - Sign up");
         System.out.println("2 - Login");
         System.out.println("3 - Logout");
@@ -64,5 +68,19 @@ public class ConsoleHelper {
         login = scanner.nextLine();
         System.out.print("Введите пароль -> ");
         pass = scanner.nextLine();
+        client.chatHelper.createAndSendLoginPackage(login, pass);
+    }
+    
+    private void sendSignUp() {
+        String login, pass;
+        System.out.print("Введите логин -> ");
+        login = scanner.nextLine();
+        System.out.print("Введите пароль -> ");
+        pass = scanner.nextLine();
+        client.chatHelper.createAndSendSignUpPackage(login, pass);
+    }
+    
+    private void sendLoguot() {
+        client.chatHelper.createAndSendLogoutPackage();
     }
 }

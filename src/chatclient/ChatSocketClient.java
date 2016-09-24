@@ -54,6 +54,7 @@ public class ChatSocketClient {
     }
     
     public void readAsync() {
+        ConsoleHelper.printMenu();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -66,7 +67,7 @@ public class ChatSocketClient {
                         buffer = Arrays.copyOf(tempBuffer, countReadByte);
                         chatHelper.parsingPackage(buffer);
                     } catch (Exception ex) {
-                        System.out.println("Ошибка чтения с сокета");
+                        System.out.println("Ошибка чтения с сокета: " + ex);
                         break;
                     }
                 }
@@ -79,16 +80,13 @@ public class ChatSocketClient {
         }).start();
     }
     
-    public void writeAsync(byte[] buffer) {
+    public void writeAsync(byte[] buffer, String authToken) {
         new Thread( new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (chatHelper.authenticationToken != null) {
+                    if (authToken != null) {
                         outStream.write(buffer, 0, buffer.length);
-                    }
-                    else {
-                        System.out.println("Сообщение не отправлено. Необходима авторизация");
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(ChatSocketClient.class.getName()).log(Level.SEVERE, null, ex);
